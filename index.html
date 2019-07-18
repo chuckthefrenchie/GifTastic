@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Topics</title>
+</head>
+
+<body>
+    <button data-topics="frenchie">frenchie</button>
+    <button data-topics="chocolate">chocolate</button>
+    <button data-topics="politics">politics</button>
+    <button data-topics="tech">tech</button>
+    <button data-topics="surfing">surfing</button>
+    <button data-topics="skateboarding">skateboarding</button>
+    <button data-topics="wine">wine</button>
+    <div id="gifs-appear-here">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $("button").on("click", function() {
+          var topics = $(this).attr("data-topics");
+    
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+                topics + "&api_key=oGtMo5Kd45OXskKdOuMmP0GolQoPOa9Z&limit=10"; // limit = 10 to limit the amount of gifs 
+          $.ajax({
+            url: queryURL,
+            method: "GET"
+          }).then(function(response) {
+              console.log(queryURL);
+              console.log(response);
+              var results = response.data;
+              for (var i = 0; i < results.length; i++) {
+                var topicsDiv = $("<div>");
+                var p = $("<p>").text("Rating: " + results[i].rating);
+                var topicsImage = $("<img>");
+                topicsImage.attr("src", results[i].images.fixed_height.url);
+                topicsDiv.append(p);
+                topicsDiv.append(topicsImage);
+                $("#gifs-appear-here").prepend(topicsDiv);
+              }
+            });
+        });
+      </script>
+
+
+</body>
+
+</html>
