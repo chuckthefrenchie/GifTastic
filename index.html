@@ -2,48 +2,100 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Topics</title>
+  <meta charset="utf-8">
+  <title>Topics</title>
+  <style>
+    #search {
+      float: right;
+      padding: 6px;
+      border: none;
+      margin-top: 8px;
+      margin-right: 16px;
+      font-size: 17px;
+    }
+  </style>
 </head>
 
 <body>
-    <button data-topics="frenchie">frenchie</button>
-    <button data-topics="chocolate">chocolate</button>
-    <button data-topics="politics">politics</button>
-    <button data-topics="tech">tech</button>
-    <button data-topics="surfing">surfing</button>
-    <button data-topics="skateboarding">skateboarding</button>
-    <button data-topics="wine">wine</button>
-    <div id="gifs-appear-here">
-    </div>
+  <!-- create a form for Search -->
+  <div id="search">
+    <p>Add a GIF!</p>
+    <input id="newTopic" type="text" placeholder="Search..">
+    <button id= "submitButton">Submit</button>
+  </div>
+  <!--- users Input tag + button +listers on the button -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!--- push value to array, render button-->
 
-    <script type="text/javascript">
-        $("button").on("click", function() {
-          var topics = $(this).attr("data-topics");
+  <div id="newButtons">
+  </div>
+  <div id="gifs-appear-here">
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script type="text/javascript">
+
+
+  var topics = ["frenchie", "chocolate", "politics", "tech", "surfing", "skateboarding"]
+  
+  // console.log(topics)
+  
+
     
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-                topics + "&api_key=oGtMo5Kd45OXskKdOuMmP0GolQoPOa9Z&limit=10"; // limit = 10 to limit the amount of gifs 
-          $.ajax({
-            url: queryURL,
-            method: "GET"
-          }).then(function(response) {
-              console.log(queryURL);
-              console.log(response);
-              var results = response.data;
-              for (var i = 0; i < results.length; i++) {
-                var topicsDiv = $("<div>");
-                var p = $("<p>").text("Rating: " + results[i].rating);
-                var topicsImage = $("<img>");
-                topicsImage.attr("src", results[i].images.fixed_height.url);
-                topicsDiv.append(p);
-                topicsDiv.append(topicsImage);
-                $("#gifs-appear-here").prepend(topicsDiv);
-              }
-            });
-        });
-      </script>
+
+
+    //submit button functionality
+    $("#submitButton").on("click", function() {
+      var userInput = $("#newTopic").val();
+      topics.push(userInput);
+      addButtons();
+    });
+
+
+    function addButtons() {
+      $("#newButtons").empty();
+      for (var i = 0; i < topics.length; i++) {
+        // document.getElementById("newButtons").innerHTML += "<button data-topics=" + topics[i] + ">" + topics[i] + "</button>";
+        var currentButton = $("<button>");
+          currentButton.attr("data-topics", topics[i]);
+          currentButton.text(topics[i]);
+          currentButton.on('click', btnClick);
+          $("#newButtons").append(currentButton);
+      }
+    }
+
+    addButtons();
+
+    function btnClick () {
+      var topics = $(this).attr("data-topics"); //need to catch the element the user is clicking on, right now it is undefined  !!!!!!
+      console.log($(this))
+      console.log(topics)
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        topics + "&api_key=oGtMo5Kd45OXskKdOuMmP0GolQoPOa9Z&limit=10"; // limit = 10 to limit the amount of gifs 
+      // console.log(queryURL);
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function (response) {
+        console.log(queryURL);
+        console.log(response);
+        var results = response.data;
+        for (var i = 0; i < results.length; i++) {
+          var topicsDiv = $("<div>");
+          var p = $("<p>").text("Rating: " + results[i].rating);
+          var topicsImage = $("<img>");
+          topicsImage.attr("src", results[i].images.fixed_height.url);
+          topicsDiv.append(p);
+          topicsDiv.append(topicsImage);
+          $("#gifs-appear-here").prepend(topicsDiv);
+
+        } // close for loop function
+
+      }); // to close response funtion
+    }// to close button function
+
+  </script>
 
 
 </body>
