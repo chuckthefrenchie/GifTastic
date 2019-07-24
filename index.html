@@ -13,6 +13,16 @@
       margin-right: 16px;
       font-size: 17px;
     }
+    #submitButton {
+      background-color: #4aaaa5;
+      color: white; 
+    }
+    button {
+      background-color: #4aaaa5;
+      color: white; 
+    }
+
+
   </style>
 </head>
 
@@ -21,7 +31,7 @@
   <div id="search">
     <p>Add a GIF!</p>
     <input id="newTopic" type="text" placeholder="Search..">
-    <button id= "submitButton">Submit</button>
+    <button id="submitButton">Submit</button>
   </div>
   <!--- users Input tag + button +listers on the button -->
 
@@ -37,19 +47,16 @@
   <script type="text/javascript">
 
 
-  var topics = ["frenchie", "chocolate", "politics", "tech", "surfing", "skateboarding"]
-  
-  // console.log(topics)
-  
+    var topics = ["frenchie", "chocolate", "politics", "tech", "surfing", "skateboarding"]
 
-    
-
+    // console.log(topics)
 
     //submit button functionality
-    $("#submitButton").on("click", function() {
+    $("#submitButton").on("click", function () {
       var userInput = $("#newTopic").val();
       topics.push(userInput);
       addButtons();
+
     });
 
 
@@ -58,19 +65,19 @@
       for (var i = 0; i < topics.length; i++) {
         // document.getElementById("newButtons").innerHTML += "<button data-topics=" + topics[i] + ">" + topics[i] + "</button>";
         var currentButton = $("<button>");
-          currentButton.attr("data-topics", topics[i]);
-          currentButton.text(topics[i]);
-          currentButton.on('click', btnClick);
-          $("#newButtons").append(currentButton);
+        currentButton.attr("data-topics", topics[i]);
+        currentButton.text(topics[i]);
+        currentButton.on('click', btnClick);
+        $("#newButtons").append(currentButton);
       }
     }
 
     addButtons();
 
-    function btnClick () {
-      var topics = $(this).attr("data-topics"); //need to catch the element the user is clicking on, right now it is undefined  !!!!!!
-      console.log($(this))
-      console.log(topics)
+    function btnClick() {
+      var topics = $(this).attr("data-topics"); //need to catch the element the user is clicking on 
+      // console.log($(this))
+      // console.log(topics)
       var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
         topics + "&api_key=oGtMo5Kd45OXskKdOuMmP0GolQoPOa9Z&limit=10"; // limit = 10 to limit the amount of gifs 
       // console.log(queryURL);
@@ -85,15 +92,51 @@
           var topicsDiv = $("<div>");
           var p = $("<p>").text("Rating: " + results[i].rating);
           var topicsImage = $("<img>");
-          topicsImage.attr("src", results[i].images.fixed_height.url);
+          topicsImage.addClass('gif');
+
+          topicsImage.attr("src", results[i].images.original_still.url);
+
+          topicsImage.attr('data-still', results[i].images.original_still.url);
+          topicsImage.attr('data-state', 'animate');
+          topicsImage.attr('data-animate', results[i].images.original.url);
+          topicsImage.attr('data-state', 'still');
+
           topicsDiv.append(p);
           topicsDiv.append(topicsImage);
           $("#gifs-appear-here").prepend(topicsDiv);
 
-        } // close for loop function
+        } 
+
 
       }); // to close response funtion
     }// to close button function
+
+    $("#gifs-appear-here").on("click", ".gif", function () {
+
+      // console.log("testtesttesttest"); //to click button is working
+
+      var state = $(this).attr("data-state");
+      // console.log(this);
+      console.log("btn click event")
+
+      if (state === "animate") {
+        $(this).attr("src", $(this).attr("data-still"))
+        $(this).attr("data-state", "still")
+        //state === "still";
+        console.log(state);
+
+
+
+
+      } else {
+        $(this).attr("src", $(this).attr("data-animate"))
+        $(this).attr("data-state", "animate")
+        //state === "animate";
+        console.log(state);
+
+      }
+    })
+
 
   </script>
 
